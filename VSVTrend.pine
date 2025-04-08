@@ -2,10 +2,10 @@
 strategy("VSVTrend Strategy", overlay=true, default_qty_type=strategy.percent_of_equity, default_qty_value=10)
 
 // === INPUTS ===
-show_strategy = input.bool(true, title="Стратегия ВКЛ/ИЗКЛ")
-use_supertrend = input.bool(true, title="Supertrend филтър")
-atrPeriod = input.int(10, title="ATR период")
-factor = input.float(3.0, title="Фактор")
+show_strategy = input.bool(true, title="Strategy ON/OFF")
+use_supertrend = input.bool(true, title="Supertrend filter")
+atrPeriod = input.int(10, title="ATR period")
+factor = input.float(3.0, title="factor")
 
 // === SUPER TREND ===
 [supertrend, direction] = ta.supertrend(factor, atrPeriod)
