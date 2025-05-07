@@ -1,0 +1,57 @@
+
+=== File: README.md ===
+
+-- Chunk 1 --
+// /app/repos/repo_3/repos/repo_0/repos/repo_0/README.md:1-19
+# VSVTrend Strategy
+
+**VSVTrend** is an advanced Pine Script strategy for TradingView, designed to maximize trade accuracy using adaptive indicators, a Supertrend filter, visual on/off toggle, and AI/ML-based false signal detection.
+
+## Key Features:
+- Adaptive Stop Loss / Take Profit system
+- Supertrend filter (toggleable)
+- Visual on/off toggle button on the chart
+- Full backtesting functionality
+- AI/ML module for identifying potential false signals
+- Works on all timeframes
+
+## Purpose
+The goal is to create a perfect "alpha indicator" strategy, freely available and open to community suggestions for continuous improvement.
+
+## Project Structure
+- `VSVTrend.pine` – main strategy code
+- `data/sample_tradelog.csv` – trade log for model training
+- `ml/model_train.py` – Python script for training ML model
+
+=== File: VSVTrend.pine ===
+
+-- Chunk 1 --
+// /app/repos/repo_3/repos/repo_0/repos/repo_0/VSVTrend.pine:1-28
+//@version=5
+strategy("VSVTrend Strategy", overlay=true, default_qty_type=strategy.percent_of_equity, default_qty_value=10)
+
+// === INPUTS ===
+show_strategy = input.bool(true, title="Strategy ON/OFF")
+use_supertrend = input.bool(true, title="Supertrend filter")
+atrPeriod = input.int(10, title="ATR period")
+factor = input.float(3.0, title="factor")
+
+// === SUPER TREND ===
+[supertrend, direction] = ta.supertrend(factor, atrPeriod)
+plot(use_supertrend ? supertrend : na, color=direction ? color.green : color.red, title="Supertrend")
+
+// === УСЛОВИЯ ЗА ВХОД/ИЗХОД ===
+longCond = show_strategy and (direction == 1)
+shortCond = show_strategy and (direction == -1)
+
+if (longCond)
+    strategy.entry("Long", strategy.long)
+if (shortCond)
+    strategy.entry("Short", strategy.short)
+
+// === TP/SL ===
+sl = input.float(1.5, title="Стоп Лос (%)") / 100
+tp = input.float(3.0, title="Тейк Профит (%)") / 100
+
+strategy.exit("TP/SL Long", from_entry="Long", profit=tp, loss=sl)
+strategy.exit("TP/SL Short", from_entry="Short", profit=tp, loss=sl)
